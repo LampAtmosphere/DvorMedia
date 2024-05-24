@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.mxn.soul.flowingdrawer_core.ElasticDrawer
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include layout="@layout/activity_example" />
+
+        <Button
+            android:id="@+id/btn_open_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Меню"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_margin="16dp"
+            android:onClick="toggleMenu" />
+
+    </FrameLayout>
+
+    <include
+        android:id="@+id/menu_layout"
+        layout="@layout/menu_layout"/>
+
+</com.mxn.soul.flowingdrawer_core.ElasticDrawer>
