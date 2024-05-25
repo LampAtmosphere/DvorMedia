@@ -6,20 +6,28 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class PeopleAdapter(private val people: List<String>) : RecyclerView.Adapter<PeopleAdapter.ViewHolder>() {
+class PeopleAdapter(private val peopleList: List<Person>, private val onPersonLongClick: (Person) -> Unit) : RecyclerView.Adapter<PeopleAdapter.PersonViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(android.R.layout.simple_list_item_1, parent, false)
-        return ViewHolder(view)
+    class PersonViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val nameTextView: TextView = itemView.findViewById(R.id.person_name_text_view)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.nameTextView.text = people[position]
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PersonViewHolder {
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_person, parent, false)
+        return PersonViewHolder(itemView)
     }
 
-    override fun getItemCount() = people.size
+    override fun onBindViewHolder(holder: PersonViewHolder, position: Int) {
+        val person = peopleList[position]
+        holder.nameTextView.text = person.name
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val nameTextView: TextView = itemView.findViewById(android.R.id.text1)
+        holder.itemView.setOnLongClickListener {
+            onPersonLongClick(person)
+            true
+        }
+    }
+
+    override fun getItemCount(): Int {
+        return peopleList.size
     }
 }

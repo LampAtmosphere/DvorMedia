@@ -19,6 +19,7 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private lateinit var googleSignInClient: GoogleSignInClient
+    private val authService = AuthService()
 
     companion object {
         private const val RC_SIGN_IN = 9001
@@ -66,6 +67,7 @@ class LoginActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     val intent = Intent(this, MainActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
                     finish()
                 } else {
@@ -98,10 +100,21 @@ class LoginActivity : AppCompatActivity() {
         FirebaseAuth.getInstance().signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    startActivity(Intent(this, MainActivity::class.java))
-                    finish()
+                    val user = FirebaseAuth.getInstance().currentUser
+                    user?.let {
+                        val email = it.email ?: ""
+                        val uid = it.uid
+
+                        // Регистрация пользователя в Firestore
+                        authService.registerUser(email, uid)
+
+                        val intent = Intent(this, MainActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                        finish()
+                    }
                 } else {
-                    Toast.makeText(baseContext, "Authentication Failed.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(baseContext, "Что то пошло не так(.", Toast.LENGTH_SHORT).show()
                 }
             }
     }

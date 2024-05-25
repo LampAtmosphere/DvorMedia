@@ -21,11 +21,17 @@ class AuthService {
             "uid" to uid,
             "role" to "user" // По умолчанию все пользователи получают роль 'user'
         )
-        db.collection(Constants.USERS_COLLECTION).document(uid).set(user)
+        db.collection("users").document(uid).set(user)
+            .addOnSuccessListener {
+                // Успешно добавлено
+            }
+            .addOnFailureListener { e ->
+                // Обработка ошибки
+            }
     }
 
     fun getUserRole(uid: String, callback: (String?) -> Unit) {
-        db.collection(Constants.USERS_COLLECTION).document(uid).get()
+        db.collection("users").document(uid).get()
             .addOnSuccessListener { document ->
                 if (document.exists()) {
                     callback(document.getString("role"))

@@ -6,20 +6,30 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class NotesAdapter(private val notes: List<String>) : RecyclerView.Adapter<NotesAdapter.ViewHolder>() {
+class NotesAdapter(private val notesList: List<Note>, private val onNoteLongClick: (Note) -> Unit) : RecyclerView.Adapter<NotesAdapter.NoteViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(android.R.layout.simple_list_item_1, parent, false)
-        return ViewHolder(view)
+    class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val dateTextView: TextView = itemView.findViewById(R.id.date_text_view)
+        val peopleTextView: TextView = itemView.findViewById(R.id.people_text_view)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.noteTextView.text = notes[position]
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_note, parent, false)
+        return NoteViewHolder(itemView)
     }
 
-    override fun getItemCount() = notes.size
+    override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
+        val note = notesList[position]
+        holder.dateTextView.text = note.date
+        holder.peopleTextView.text = note.people.joinToString("\n")
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val noteTextView: TextView = itemView.findViewById(android.R.id.text1)
+        holder.itemView.setOnLongClickListener {
+            onNoteLongClick(note)
+            true
+        }
+    }
+
+    override fun getItemCount(): Int {
+        return notesList.size
     }
 }

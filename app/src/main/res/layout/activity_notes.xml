@@ -2,20 +2,28 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/photo_2024_05_24_22_41_27"
     android:orientation="vertical"
     android:padding="16dp">
 
     <EditText
         android:id="@+id/people_edit_text"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Введите людей:"
+        android:layout_height="100dp"
+        android:hint="Кто сегодня пришёл:"
         android:inputType="text" />
 
     <Button
         android:id="@+id/save_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="#C8B501"
         android:text="Сохранить" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="365dp"
+        android:layout_height="640dp"
+        android:layout_marginTop="16dp"
+        android:scrollbars="vertical" />
 </LinearLayout>

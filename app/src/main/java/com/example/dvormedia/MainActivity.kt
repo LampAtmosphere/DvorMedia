@@ -2,6 +2,9 @@ package com.example.dvormedia
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Gravity
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -50,6 +53,7 @@ class MainActivity : AppCompatActivity() {
 
         setupNavigationMenu()
         loadPeopleData()
+        addVersionToDrawer()
     }
 
     private fun setupNavigationMenu() {
@@ -92,7 +96,7 @@ class MainActivity : AppCompatActivity() {
         peopleListener = FirebaseFirestore.getInstance().collection("people").addSnapshotListener { documents, error ->
             if (error == null && documents != null) {
                 val totalPeopleCount = documents.size()
-                totalPeopleText.text = "Total People: $totalPeopleCount"
+                totalPeopleText.text = "Нас уже: $totalPeopleCount"
             }
         }
 
@@ -105,9 +109,31 @@ class MainActivity : AppCompatActivity() {
                     val peopleList = document.get("people") as? List<*>
                     peopleTodayCount += peopleList?.size ?: 0
                 }
-                todayPeopleText.text = "People Today: $peopleTodayCount"
+                todayPeopleText.text = "Пришло сегодня: $peopleTodayCount"
             }
         }
+    }
+
+    private fun addVersionToDrawer() {
+        // Получение версии приложения
+        val versionName = packageManager.getPackageInfo(packageName, 0).versionName
+
+        // Создание TextView для версии приложения
+        val versionTextView = TextView(this).apply {
+            text = "Версия $versionName"
+            textSize = 14f
+            setPadding(16, 16, 16, 16)
+            layoutParams = FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            ).apply {
+                gravity = Gravity.BOTTOM or Gravity.END
+                setMargins(16, 16, 16, 16)
+            }
+        }
+
+        // Добавление TextView в NavigationView
+        navigationView.addView(versionTextView)
     }
 
     override fun onDestroy() {
