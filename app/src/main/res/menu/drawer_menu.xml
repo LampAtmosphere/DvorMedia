@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_example_activity"
+        android:title="Мероприятия" />
+    <item
+        android:id="@+id/nav_people_activity"
+        android:title="Дворовые)" />
+    <item
+        android:id="@+id/nav_note_activity"
+        android:title="Кто сегодня пришёл?" />
+    <item
+        android:id="@+id/nav_new_event_activity"
+        android:title="Анонс о Мероприятии"
+        android:visible="false" />
+</menu>

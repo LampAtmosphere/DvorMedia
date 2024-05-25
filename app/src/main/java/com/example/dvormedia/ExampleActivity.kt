@@ -50,3 +50,15 @@ class ExampleActivity : AppCompatActivity() {
             }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+

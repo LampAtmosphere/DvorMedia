@@ -1,33 +1,41 @@
 package com.example.dvormedia
 
 import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 class NotesActivity : AppCompatActivity() {
 
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: NotesAdapter
-    private val notes = mutableListOf<String>()
+    private lateinit var peopleEditText: EditText
+    private lateinit var saveButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notes)
 
-        recyclerView = findViewById(R.id.recyclerView)
-        adapter = NotesAdapter(notes)
-        recyclerView.apply {
-            layoutManager = LinearLayoutManager(this@NotesActivity)
-            adapter = this@NotesActivity.adapter
-        }
+        peopleEditText = findViewById(R.id.people_edit_text)
+        saveButton = findViewById(R.id.save_button)
 
-        // Добавьте заметку с сегодняшней датой
-        val currentDate = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date())
-        notes.add("Заметка от $currentDate")
-        adapter.notifyDataSetChanged()
+        saveButton.setOnClickListener {
+            saveNote()
+        }
+    }
+
+    private fun saveNote() {
+        val people = peopleEditText.text.toString().split(",").map { it.trim() }
+        val note = hashMapOf(
+            "date" to SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
+            "people" to people
+        )
+
+        FirebaseFirestore.getInstance().collection("notes").add(note).addOnSuccessListener {
+            // Успешно сохранено
+        }.addOnFailureListener {
+            // Обработка ошибки
+        }
     }
 }
