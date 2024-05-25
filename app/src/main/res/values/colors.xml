@@ -1,8 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
+    <color name="purple_200">#BB86FC</color>
+    <color name="purple_500">#6200EE</color>
+    <color name="purple_700">#3700B3</color>
+    <color name="teal_200">#03DAC5</color>
+    <color name="teal_700">#018786</color>
+
+    <color name="primaryColor">#6200EE</color> <!-- Фиолетовый -->
+    <color name="primaryVariantColor">#3700B3</color> <!-- Тёмный фиолетовый -->
+    <color name="secondaryColor">#03DAC6</color> <!-- Оранжевый -->
+    <color name="backgroundColor">#121212</color> <!-- Чёрный -->
+    <color name="surfaceColor">#1E1E1E</color> <!-- Тёмно-серый -->
+    <color name="errorColor">#CF6679</color> <!-- Красный для ошибок -->
+    <!-- Текстовые цвета -->
+    <color name="onPrimaryColor">#FFFFFF</color> <!-- Белый для текста на фиолетовом -->
+    <color name="onSecondaryColor">#000000</color> <!-- Чёрный для текста на оранжевом -->
+    <color name="onBackgroundColor">#FFFFFF</color> <!-- Белый для текста на чёрном -->
+    <color name="onSurfaceColor">#FFFFFF</color> <!-- Белый для текста на тёмно-сером -->
+    <color name="onErrorColor">#000000</color> <!-- Чёрный для текста на красном -->
 </resources>

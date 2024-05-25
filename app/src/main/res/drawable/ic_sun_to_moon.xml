@@ -1,0 +1,6 @@
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/ic_sun">
+    <target
+        android:name="path"
+        android:animation="@animator/sun_to_moon_path_morph" />
+</animated-vector>

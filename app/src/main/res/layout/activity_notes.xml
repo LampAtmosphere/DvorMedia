@@ -11,19 +11,21 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:hint="Кто сегодня пришёл:"
-        android:inputType="text" />
+        android:inputType="text"
+        android:visibility="gone" /> <!-- Скрыт по умолчанию -->
 
     <Button
         android:id="@+id/save_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="#C8B501"
-        android:text="Сохранить" />
+        android:text="Сохранить"
+        android:visibility="gone" /> <!-- Скрыт по умолчанию -->
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
-        android:layout_width="365dp"
-        android:layout_height="640dp"
+        android:layout_width="363dp"
+        android:layout_height="782dp"
         android:layout_marginTop="16dp"
         android:scrollbars="vertical" />
 </LinearLayout>

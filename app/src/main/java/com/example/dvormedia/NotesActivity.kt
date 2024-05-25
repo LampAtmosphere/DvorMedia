@@ -1,11 +1,14 @@
 package com.example.dvormedia
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -42,6 +45,11 @@ class NotesActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         notesAdapter = NotesAdapter(notesList) { note ->
             showDeleteDialog(note)
+        recyclerView.addItemDecoration(
+            DividerItemDecoration(this, DividerItemDecoration.VERTICAL).apply {
+                setDrawable(ContextCompat.getDrawable(this@NotesActivity, R.drawable.divider)!!)
+            }
+        )
         }
         recyclerView.adapter = notesAdapter
 
@@ -51,10 +59,11 @@ class NotesActivity : AppCompatActivity() {
                 saveButton.setOnClickListener {
                     saveNote()
                 }
+                peopleEditText.visibility = View.VISIBLE
+                saveButton.visibility = View.VISIBLE
             } else {
-                saveButton.isEnabled = false
-                peopleEditText.isEnabled = false
-                Toast.makeText(this, "Доступ запрещен", Toast.LENGTH_SHORT).show()
+                peopleEditText.visibility = View.GONE
+                saveButton.visibility = View.GONE
             }
         }
 
@@ -81,6 +90,11 @@ class NotesActivity : AppCompatActivity() {
                 )
                 noteRef.set(note)
             }
+        }.addOnCompleteListener {
+            // Показать сообщение о сохранении
+            Toast.makeText(this, "Данные сохранены", Toast.LENGTH_SHORT).show()
+            // Очистить поле ввода
+            peopleEditText.text.clear()
         }
     }
 
