@@ -19,6 +19,7 @@
         <item name="headerBackground">@color/header_background_dark</item>
         <item name="drawer_back">@color/drawer_background_dark</item>
         <item name="nav_back">@color/nav_back_dark</item>
+        <item name="button_back">@color/button_back_dark</item>
     </style>
 
     <style name="Theme.DvorMedia" parent="Base.Theme.DvorMedia">

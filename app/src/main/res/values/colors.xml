@@ -35,6 +35,9 @@
     <color name="nav_back_light">#C8B501</color>
     <color name="nav_back_dark">#5E206C</color>
 
+    <color name="button_back_light">#8A46F139</color>
+    <color name="button_back_dark">#956900A3</color>
+
     <color name="dark_background">#121212</color>
     <color name="dark_surface">#1E1E1E</color>
     <color name="dark_primary">#500559</color>

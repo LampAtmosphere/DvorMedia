@@ -11,6 +11,7 @@
         <item name="headerBackground">@color/header_background_light</item>
         <item name="drawer_back">@color/drawer_background_light</item>
         <item name="nav_back">@color/nav_back_light</item>
+        <item name="button_back">@color/button_back_light</item>
     </style>
 
     <style name="Theme.DvorMedia" parent="Base.Theme.DvorMedia" />
