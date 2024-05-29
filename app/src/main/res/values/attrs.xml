@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="headerBackground" format="reference|color" />
+    <attr name="drawer_back" format="reference|color"/>
+    <attr name="nav_back" format="reference|color"/>
+    <atte name="button_back" format="reference|color"/>
+</resources>

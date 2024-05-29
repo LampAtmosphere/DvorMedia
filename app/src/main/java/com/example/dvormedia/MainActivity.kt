@@ -1,22 +1,28 @@
 package com.example.dvormedia
 
 import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Intent
-import android.graphics.drawable.AnimatedVectorDrawable
+import android.content.SharedPreferences
+import android.graphics.Typeface
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
 import android.util.Log
 import android.view.Gravity
+import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageButton
+import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -30,47 +36,56 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navigationView: NavigationView
-    private lateinit var toolbar: Toolbar
-    private lateinit var drawerToggle: ActionBarDrawerToggle
     private lateinit var totalPeopleText: TextView
     private lateinit var todayPeopleText: TextView
     private lateinit var peopleListener: ListenerRegistration
     private lateinit var notesListener: ListenerRegistration
     private lateinit var themeToggleButton: ImageButton
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var mainContent: FrameLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("MainActivity", "onCreate started")
         setContentView(R.layout.activity_main)
-
-        toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        Log.d("MainActivity", "setContentView completed")
 
         drawerLayout = findViewById(R.id.drawer_layout)
         navigationView = findViewById(R.id.nav_view)
         totalPeopleText = findViewById(R.id.total_people_text)
         todayPeopleText = findViewById(R.id.today_people_text)
-
-        drawerToggle = ActionBarDrawerToggle(
-            this,
-            drawerLayout,
-            toolbar,
-            R.string.navigation_drawer_open,
-            R.string.navigation_drawer_close
-        )
-        drawerLayout.addDrawerListener(drawerToggle)
-        drawerToggle.syncState()
+        mainContent = findViewById(R.id.main_content)
 
         setupNavigationMenu()
         loadPeopleData()
         addVersionToDrawer()
 
         // Setup theme toggle button
-        /*val headerView = navigationView.getHeaderView(0)
+        val headerView = navigationView.getHeaderView(0)
         themeToggleButton = headerView.findViewById(R.id.theme_toggle_button)
+        val headerTitle: TextView = findViewById(R.id.header_title)
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+
+        headerTitle.setOnClickListener {
+            drawerLayout.openDrawer(GravityCompat.START)
+        }
+        // Initialize SharedPreferences
+        sharedPreferences = getSharedPreferences("theme_prefs", MODE_PRIVATE)
+        val isNightMode = sharedPreferences.getBoolean("isNightMode", false)
+        if (isNightMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            themeToggleButton.setImageResource(R.drawable.ic_sun)
+            mainContent.setBackgroundResource(R.drawable.darkbww)
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            themeToggleButton.setImageResource(R.drawable.ic_moon)
+            mainContent.setBackgroundResource(R.drawable.photo_2024_05_24_22_41_27)
+        }
+
         themeToggleButton.setOnClickListener {
+            animateButtonClick(it)
             toggleTheme()
         }
-        updateThemeIcon()*/
     }
 
     private fun setupNavigationMenu() {
@@ -80,7 +95,16 @@ class MainActivity : AppCompatActivity() {
                 if (document.exists()) {
                     val role = document.getString("role")
                     if (role == "admin") {
-                        navigationView.menu.findItem(R.id.nav_new_event_activity).isVisible = true
+                        val newEventMenuItem = navigationView.menu.findItem(R.id.nav_new_event_activity)
+                        newEventMenuItem.isVisible = true
+
+                        // Установка шрифта и стиля текста
+                        val typeface = ResourcesCompat.getFont(this, R.font.handyman)
+                        if (typeface != null) {
+                            val spannableString = SpannableString(newEventMenuItem.title)
+                            spannableString.setSpan(CustomTypefaceSpan("", typeface, Typeface.BOLD), 0, spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                            newEventMenuItem.title = spannableString
+                        }
                     }
                 }
             }.addOnFailureListener {
@@ -169,53 +193,58 @@ class MainActivity : AppCompatActivity() {
         navigationView.addView(versionTextView)
     }
 
-    private fun toggleTheme() {
-        val currentNightMode = resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK
-        val isNightMode = currentNightMode == android.content.res.Configuration.UI_MODE_NIGHT_YES
+    private fun animateButtonClick(view: View) {
+        val scaleDownX = ObjectAnimator.ofFloat(view, "scaleX", 0.7f)
+        val scaleDownY = ObjectAnimator.ofFloat(view, "scaleY", 0.7f)
+        scaleDownX.duration = 200
+        scaleDownY.duration = 200
 
-        // Анимация замены иконок
-        val fadeOut = ObjectAnimator.ofFloat(themeToggleButton, "alpha", 1f, 0f)
-        fadeOut.duration = 200
+        val scaleUpX = ObjectAnimator.ofFloat(view, "scaleX", 1.0f)
+        val scaleUpY = ObjectAnimator.ofFloat(view, "scaleY", 1.0f)
+        scaleUpX.duration = 200
+        scaleUpY.duration = 200
 
-        val fadeIn = ObjectAnimator.ofFloat(themeToggleButton, "alpha", 0f, 1f)
-        fadeIn.duration = 200
+        val scaleDown = AnimatorSet()
+        scaleDown.play(scaleDownX).with(scaleDownY)
 
-        fadeOut.addListener(object : Animator.AnimatorListener {
-            override fun onAnimationStart(animation: Animator) {}
+        val scaleUp = AnimatorSet()
+        scaleUp.play(scaleUpX).with(scaleUpY)
 
+        val scaleDownUp = AnimatorSet()
+        scaleDownUp.play(scaleDown).before(scaleUp)
+        scaleDownUp.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
-                if (isNightMode) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    animateIconChange(ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_moon_to_sun) as AnimatedVectorDrawable)
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                    animateIconChange(ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_sun_to_moon) as AnimatedVectorDrawable)
-                }
-                fadeIn.start()
+                super.onAnimationEnd(animation)
+                view.isClickable = true
             }
 
-            override fun onAnimationCancel(animation: Animator) {}
-
-            override fun onAnimationRepeat(animation: Animator) {}
+            override fun onAnimationStart(animation: Animator) {
+                super.onAnimationStart(animation)
+                view.isClickable = false
+            }
         })
-
-        AnimatorSet().apply {
-            playSequentially(fadeOut, fadeIn)
-            start()
-        }
+        scaleDownUp.start()
     }
 
-    private fun animateIconChange(drawable: AnimatedVectorDrawable) {
-        themeToggleButton.setImageDrawable(drawable)
-        drawable.start()
-    }
+    private fun toggleTheme() {
+        val isNightMode = sharedPreferences.getBoolean("isNightMode", false)
+        if (isNightMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            themeToggleButton.setImageResource(R.drawable.ic_moon)
+            mainContent.setBackgroundResource(R.drawable.photo_2024_05_24_22_41_27)
 
-    private fun updateThemeIcon() {
-        val currentNightMode = resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK
-        if (currentNightMode == android.content.res.Configuration.UI_MODE_NIGHT_YES) {
-            themeToggleButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_sun))
+            val header = findViewById<RelativeLayout>(R.id.header_layout)
+            header.background = ColorDrawable(resources.getColor(R.color.header_background_dark))
         } else {
-            themeToggleButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_moon))
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            themeToggleButton.setImageResource(R.drawable.ic_sun)
+            mainContent.setBackgroundResource(R.drawable.darkbww)
+        }
+
+        // Save theme preference
+        with(sharedPreferences.edit()) {
+            putBoolean("isNightMode", !isNightMode)
+            apply()
         }
     }
 

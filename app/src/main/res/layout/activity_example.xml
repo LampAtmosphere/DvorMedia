@@ -3,21 +3,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ExampleActivity"
-    android:background="@drawable/photo_2024_05_24_22_41_27__2_">
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    tools:context=".ExampleActivity">
+    <FrameLayout
+        android:id="@+id/main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/emptyView"
-        android:scrollbars="vertical" />
+        android:background="@drawable/photo_2024_05_24_22_41_27" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/emptyView"
+            android:scrollbars="vertical" />
 
-    <TextView
-        android:id="@+id/emptyView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="Здесь пока что ничего нету("
-        android:visibility="gone" />
+        <TextView
+            android:id="@+id/emptyView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Здесь пока что ничего нету("
+            android:visibility="gone" />
 </RelativeLayout>

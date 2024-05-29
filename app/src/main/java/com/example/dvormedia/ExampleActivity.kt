@@ -1,5 +1,6 @@
 package com.example.dvormedia
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -15,12 +16,15 @@ class ExampleActivity : AppCompatActivity() {
     private lateinit var adapter: EventsAdapter
     private val events = mutableListOf<Event>()
     private val db = FirebaseFirestore.getInstance()
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var mainContent: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_example)
 
         recyclerView = findViewById(R.id.recyclerView)
+        mainContent = findViewById(R.id.main_content) // Предполагается, что у вас есть View с id main_content
 
         adapter = EventsAdapter(events)
         recyclerView.apply {
@@ -30,6 +34,15 @@ class ExampleActivity : AppCompatActivity() {
         }
 
         fetchEvents()
+
+        // Initialize SharedPreferences
+        sharedPreferences = getSharedPreferences("theme_prefs", MODE_PRIVATE)
+        val isNightMode = sharedPreferences.getBoolean("isNightMode", false)
+        if (isNightMode) {
+            mainContent.setBackgroundResource(R.drawable.darkbww)
+        } else {
+            mainContent.setBackgroundResource(R.drawable.photo_2024_05_24_22_41_27)
+        }
     }
 
     private fun fetchEvents() {
@@ -50,15 +63,3 @@ class ExampleActivity : AppCompatActivity() {
             }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-

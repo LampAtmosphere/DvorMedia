@@ -1,14 +1,13 @@
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
-    <color name="purple_200">#BB86FC</color>
     <color name="purple_500">#6200EE</color>
     <color name="purple_700">#3700B3</color>
     <color name="teal_200">#03DAC5</color>
     <color name="teal_700">#018786</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
 
     <color name="primaryColor">#6200EE</color> <!-- Фиолетовый -->
     <color name="primaryVariantColor">#3700B3</color> <!-- Тёмный фиолетовый -->
@@ -21,5 +20,33 @@
     <color name="onSecondaryColor">#000000</color> <!-- Чёрный для текста на оранжевом -->
     <color name="onBackgroundColor">#FFFFFF</color> <!-- Белый для текста на чёрном -->
     <color name="onSurfaceColor">#FFFFFF</color> <!-- Белый для текста на тёмно-сером -->
-    <color name="onErrorColor">#000000</color> <!-- Чёрный для текста на красном -->
+    <color name="onErrorColor">#000000</color>
+
+    <color name="header_background_light">#95C8B500</color>
+    <color name="header_background_dark">#57680183</color>
+
+    <color name="button_default">#1BBF0F</color>
+    <color name="button_pressed">#D5C008</color>
+    <color name="button_focused">#CAFF0D</color>
+  <!--  #B0CFC944-->
+    <color name="drawer_background_light">#CEFFFFFF</color>
+    <color name="drawer_background_dark">#4BFF00FA</color>
+
+    <color name="nav_back_light">#C8B501</color>
+    <color name="nav_back_dark">#5E206C</color>
+
+    <color name="dark_background">#121212</color>
+    <color name="dark_surface">#1E1E1E</color>
+    <color name="dark_primary">#500559</color>
+    <color name="dark_primary_variant">#000000</color>
+    <color name="dark_secondary">#0004FF</color>
+    <color name="dark_secondary_variant">#495050</color>
+    <color name="dark_on_primary">#FFFFFF</color>
+    <color name="dark_on_secondary">#000000</color>
+    <color name="dark_orange">#FF9800</color>
+    <color name="dark_red">#D32F2F</color>
+    <color name="dark_transparent_orange">#A98E24AA</color>
+    <color name="dark_transparent_red">#80D32F2F</color>
+    <color name="dark_transparent_purple">#803700B3</color>
+
 </resources>

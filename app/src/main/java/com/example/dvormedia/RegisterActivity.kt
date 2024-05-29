@@ -1,7 +1,10 @@
 package com.example.dvormedia
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.dvormedia.databinding.ActivityRegisterBinding
@@ -20,6 +23,7 @@ class RegisterActivity : AppCompatActivity() {
 
         binding.buttonRegister.setOnClickListener {
             createNewUser(binding.editTextNewEmail.text.toString(), binding.editTextNewPassword.text.toString())
+            animateButtonClick(it)
         }
     }
 
@@ -53,5 +57,15 @@ class RegisterActivity : AppCompatActivity() {
             .addOnFailureListener { e ->
                 Log.d("err", "Error adding user to Firestore: ${e.message}")
             }
+    }
+    private fun animateButtonClick(view: View) {
+        val scaleX = ObjectAnimator.ofFloat(view, "scaleX", 1f, 0.95f, 1f)
+        val scaleY = ObjectAnimator.ofFloat(view, "scaleY", 1f, 0.95f, 1f)
+        scaleX.duration = 100
+        scaleY.duration = 100
+
+        val animatorSet = AnimatorSet()
+        animatorSet.playTogether(scaleX, scaleY)
+        animatorSet.start()
     }
 }

@@ -1,31 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/photo_2024_05_24_22_41_27"
-    android:orientation="vertical"
-    android:padding="16dp">
-
-    <EditText
-        android:id="@+id/people_edit_text"
+    android:orientation="vertical">
+    <FrameLayout
+        android:id="@+id/main_content"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:hint="Кто сегодня пришёл:"
-        android:inputType="text"
-        android:visibility="gone" /> <!-- Скрыт по умолчанию -->
+        android:layout_height="match_parent"
+        android:background="@drawable/photo_2024_05_24_22_41_27" >
 
-    <Button
-        android:id="@+id/save_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#C8B501"
-        android:text="Сохранить"
-        android:visibility="gone" /> <!-- Скрыт по умолчанию -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="681dp"
+            android:layout_marginTop="135dp"
+            android:scrollbars="vertical"/>  <!-- Скрыт по умолчанию -->
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="363dp"
-        android:layout_height="782dp"
-        android:layout_marginTop="16dp"
-        android:scrollbars="vertical" />
-</LinearLayout>
+        <EditText
+            android:id="@+id/people_edit_text"
+            android:layout_width="243dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="80dp"
+            android:layout_marginTop="28dp"
+            android:background="@drawable/rounded_edit_text"
+            android:hint="Кто сегодня пришёл:"
+            android:inputType="text"
+            android:padding="5dp"
+            android:visibility="gone" />/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/save_button"
+            android:layout_width="243dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:layout_marginLeft="80dp"
+            android:background="@drawable/rounded_button"
+            android:text="Сохранить"
+            android:visibility="gone" /> <!-- Скрыт по умолчанию -->
+    </FrameLayout>
+</RelativeLayout>

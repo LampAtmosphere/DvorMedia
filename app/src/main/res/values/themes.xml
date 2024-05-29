@@ -7,6 +7,10 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:navigationBarColor">#C8B501</item>
         <item name="android:statusBarColor">#C8B501</item>
+        <item name="android:fontFamily">@font/centurgothicregular</item>
+        <item name="headerBackground">@color/header_background_light</item>
+        <item name="drawer_back">@color/drawer_background_light</item>
+        <item name="nav_back">@color/nav_back_light</item>
     </style>
 
     <style name="Theme.DvorMedia" parent="Base.Theme.DvorMedia" />

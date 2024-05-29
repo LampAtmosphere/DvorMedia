@@ -1,12 +1,18 @@
 package com.example.dvormedia
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -18,6 +24,8 @@ class PeopleActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var peopleAdapter: PeopleAdapter
     private val peopleList = mutableListOf<Person>()
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var mainContent: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,14 +34,19 @@ class PeopleActivity : AppCompatActivity() {
         personEditText = findViewById(R.id.person_edit_text)
         addButton = findViewById(R.id.add_button)
         recyclerView = findViewById(R.id.recyclerView)
+        mainContent = findViewById(R.id.main_content) // Предполагается, что у вас есть View с id main_content
 
         setupRecyclerView()
         checkUserRole()
+        loadPeopleFromFirestore() // Загрузка данных из Firestore
 
         addButton.setOnClickListener {
+            animateButtonClick(it)
             val personName = personEditText.text.toString()
             if (personName.isNotEmpty()) {
                 addPerson(Person(name = personName))
+            } else {
+                Toast.makeText(this, "Пусто-_-", Toast.LENGTH_SHORT).show()
             }
         }
         recyclerView.addItemDecoration(
@@ -41,6 +54,15 @@ class PeopleActivity : AppCompatActivity() {
                 setDrawable(ContextCompat.getDrawable(this@PeopleActivity, R.drawable.divider)!!)
             }
         )
+
+        // Initialize SharedPreferences
+        sharedPreferences = getSharedPreferences("theme_prefs", MODE_PRIVATE)
+        val isNightMode = sharedPreferences.getBoolean("isNightMode", false)
+        if (isNightMode) {
+            mainContent.setBackgroundResource(R.drawable.darkbwwb)
+        } else {
+            mainContent.setBackgroundResource(R.drawable.photo_2024_05_24_22_41_27)
+        }
     }
 
     private fun setupRecyclerView() {
@@ -48,6 +70,7 @@ class PeopleActivity : AppCompatActivity() {
             // Действие при долгом нажатии на элемент
         }
         recyclerView.adapter = peopleAdapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
     }
 
     private fun checkUserRole() {
@@ -67,10 +90,42 @@ class PeopleActivity : AppCompatActivity() {
         }
     }
 
+    private fun loadPeopleFromFirestore() {
+        FirebaseFirestore.getInstance().collection("people").get().addOnSuccessListener { documents ->
+            if (documents != null) {
+                peopleList.clear()
+                for (document in documents) {
+                    val person = document.toObject(Person::class.java)
+                    Log.d("PeopleActivity", "Loaded person: ${person.name}")
+                    peopleList.add(person)
+                }
+                peopleAdapter.notifyDataSetChanged()
+            } else {
+                Log.d("PeopleActivity", "No documents found in 'people' collection")
+            }
+        }.addOnFailureListener { exception ->
+            Log.e("PeopleActivity", "Error loading people from Firestore", exception)
+        }
+    }
+
     private fun addPerson(person: Person) {
-        // Логика добавления человека в список
-        peopleList.add(person)
-        peopleAdapter.notifyDataSetChanged()
-        personEditText.text.clear()
+        FirebaseFirestore.getInstance().collection("people").add(person).addOnSuccessListener {
+            Log.d("PeopleActivity", "Person added: ${person.name}")
+            peopleList.add(person)
+            peopleAdapter.notifyDataSetChanged()
+            personEditText.text.clear()
+        }.addOnFailureListener { exception ->
+            Log.e("PeopleActivity", "Error adding person to Firestore", exception)
+        }
+    }
+    private fun animateButtonClick(view: View) {
+        val scaleX = ObjectAnimator.ofFloat(view, "scaleX", 1f, 0.95f, 1f)
+        val scaleY = ObjectAnimator.ofFloat(view, "scaleY", 1f, 0.95f, 1f)
+        scaleX.duration = 100
+        scaleY.duration = 100
+
+        val animatorSet = AnimatorSet()
+        animatorSet.playTogether(scaleX, scaleY)
+        animatorSet.start()
     }
 }

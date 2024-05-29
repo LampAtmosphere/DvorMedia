@@ -1,5 +1,8 @@
 package com.example.dvormedia
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -33,6 +36,8 @@ class NotesActivity : AppCompatActivity() {
     private lateinit var notesAdapter: NotesAdapter
     private val notesList = mutableListOf<Note>()
     private lateinit var notesListener: ListenerRegistration
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var mainContent: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,15 +46,16 @@ class NotesActivity : AppCompatActivity() {
         peopleEditText = findViewById(R.id.people_edit_text)
         saveButton = findViewById(R.id.save_button)
         recyclerView = findViewById(R.id.recyclerView)
+        mainContent = findViewById(R.id.main_content) // Предполагается, что у вас есть View с id main_content
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         notesAdapter = NotesAdapter(notesList) { note ->
             showDeleteDialog(note)
-        recyclerView.addItemDecoration(
-            DividerItemDecoration(this, DividerItemDecoration.VERTICAL).apply {
-                setDrawable(ContextCompat.getDrawable(this@NotesActivity, R.drawable.divider)!!)
-            }
-        )
+            recyclerView.addItemDecoration(
+                DividerItemDecoration(this, DividerItemDecoration.VERTICAL).apply {
+                    setDrawable(ContextCompat.getDrawable(this@NotesActivity, R.drawable.divider)!!)
+                }
+            )
         }
         recyclerView.adapter = notesAdapter
 
@@ -57,6 +63,7 @@ class NotesActivity : AppCompatActivity() {
         checkUserRole { isAdmin ->
             if (isAdmin) {
                 saveButton.setOnClickListener {
+                    animateButtonClick(it)
                     saveNote()
                 }
                 peopleEditText.visibility = View.VISIBLE
@@ -68,6 +75,15 @@ class NotesActivity : AppCompatActivity() {
         }
 
         loadNotesData()
+
+        // Initialize SharedPreferences
+        sharedPreferences = getSharedPreferences("theme_prefs", MODE_PRIVATE)
+        val isNightMode = sharedPreferences.getBoolean("isNightMode", false)
+        if (isNightMode) {
+            mainContent.setBackgroundResource(R.drawable.darkbww)
+        } else {
+            mainContent.setBackgroundResource(R.drawable.photo_2024_05_24_22_41_27)
+        }
     }
 
     private fun saveNote() {
@@ -170,6 +186,17 @@ class NotesActivity : AppCompatActivity() {
         } else {
             callback(false)
         }
+    }
+
+    private fun animateButtonClick(view: View) {
+        val scaleX = ObjectAnimator.ofFloat(view, "scaleX", 1f, 0.95f, 1f)
+        val scaleY = ObjectAnimator.ofFloat(view, "scaleY", 1f, 0.95f, 1f)
+        scaleX.duration = 100
+        scaleY.duration = 100
+
+        val animatorSet = AnimatorSet()
+        animatorSet.playTogether(scaleX, scaleY)
+        animatorSet.start()
     }
 
     override fun onDestroy() {

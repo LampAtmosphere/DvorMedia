@@ -1,128 +1,80 @@
 package com.example.dvormedia
 
-import android.app.Activity
-import android.content.Intent
-import android.net.Uri
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.dvormedia.databinding.ActivityNewEventBinding
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
 
 class NewEventActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityNewEventBinding
-    private var selectedMediaUri: Uri? = null
-    private var mediaType: String? = null
-
-    companion object {
-        private const val PICK_MEDIA_REQUEST_CODE = 1
-    }
+    private lateinit var eventTitleEditText: EditText
+    private lateinit var eventDescEditText: EditText
+    private lateinit var saveEventButton: Button
+    private lateinit var uploadButton: Button
+    private lateinit var selectedImageView: ImageView
+    private lateinit var selectedVideoView: VideoView
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var mainContent: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityNewEventBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_new_event)
 
-        // Button to pick media from gallery
-        binding.uploadButton.setOnClickListener {
-            val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
-                type = "*/*"
-                putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*", "video/*"))
-            }
-            startActivityForResult(Intent.createChooser(intent, "Select Picture or Video"), PICK_MEDIA_REQUEST_CODE)
+        eventTitleEditText = findViewById(R.id.eventTitleEditText)
+        eventDescEditText = findViewById(R.id.eventDescEditText)
+        saveEventButton = findViewById(R.id.saveEventButton)
+        uploadButton = findViewById(R.id.uploadButton)
+        selectedImageView = findViewById(R.id.selectedImageView)
+        selectedVideoView = findViewById(R.id.selectedVideoView)
+        mainContent = findViewById(R.id.main_content) // Предполагается, что у вас есть View с id main_content
+
+        saveEventButton.setOnClickListener {
+            animateButtonClick(it)
+            saveEvent()
         }
 
-        // Button to save event data
-        binding.saveEventButton.setOnClickListener {
-            val title = binding.eventTitleEditText.text.toString().trim()
-            val description = binding.eventDescEditText.text.toString().trim()
-            val adminId = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
+        uploadButton.setOnClickListener {
+            animateButtonClick(it)
+            // Логика загрузки изображений или видео
+        }
 
-            if (selectedMediaUri != null && title.isNotEmpty() && description.isNotEmpty()) {
-                val newEventRef = FirebaseFirestore.getInstance().collection("event").document()
-                val eventId = newEventRef.id
-                uploadMediaFile(selectedMediaUri!!, eventId) { url ->
-                    val event = hashMapOf(
-                        "adminId" to adminId,
-                        "title" to title,
-                        "description" to description,
-                        "id" to eventId,
-                        "imageURL" to if (mediaType == "image") url else "",
-                        "videoURL" to if (mediaType == "video") url else ""
-                    )
-                    saveEventData(eventId, event)
-                }
-            } else {
-                Toast.makeText(this, "Please fill all fields and select an image or video.", Toast.LENGTH_SHORT).show()
-            }
+        // Initialize SharedPreferences
+        sharedPreferences = getSharedPreferences("theme_prefs", MODE_PRIVATE)
+        val isNightMode = sharedPreferences.getBoolean("isNightMode", false)
+        if (isNightMode) {
+            mainContent.setBackgroundResource(R.drawable.darkbbwb)
+        } else {
+            mainContent.setBackgroundResource(R.drawable.photo_2024_05_24_22_41_27)
         }
     }
 
-    private fun uploadMediaFile(fileUri: Uri, eventId: String, completion: (String) -> Unit) {
-        val fileName = if (mediaType == "image") "images/$eventId" else "videos/$eventId"
-        val storageRef = FirebaseStorage.getInstance().reference.child("events_media/$fileName")
-        val uploadTask = storageRef.putFile(fileUri)
+    private fun saveEvent() {
+        val title = eventTitleEditText.text.toString()
+        val description = eventDescEditText.text.toString()
 
-        uploadTask.continueWithTask { task ->
-            if (!task.isSuccessful) {
-                task.exception?.let { throw it }
-            }
-            storageRef.downloadUrl
-        }.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val downloadUri = task.result
-                completion(downloadUri.toString())
-            } else {
-                Toast.makeText(this, "Upload failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
-            }
+        if (title.isEmpty() || description.isEmpty()) {
+            Toast.makeText(this, "Заполните все поля", Toast.LENGTH_SHORT).show()
+            return
         }
+
+        // Логика сохранения мероприятия в базу данных
     }
 
-    private fun saveEventData(eventId: String, eventData: Map<String, Any>) {
-        FirebaseFirestore.getInstance().collection("event")
-            .document(eventId)
-            .set(eventData)
-            .addOnSuccessListener {
-                Toast.makeText(this, "Event saved", Toast.LENGTH_SHORT).show()
-                finish()
-            }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Failed to save event: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
-    }
+    private fun animateButtonClick(view: View) {
+        val scaleX = ObjectAnimator.ofFloat(view, "scaleX", 1f, 0.95f, 1f)
+        val scaleY = ObjectAnimator.ofFloat(view, "scaleY", 1f, 0.95f, 1f)
+        scaleX.duration = 100
+        scaleY.duration = 100
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PICK_MEDIA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            data?.data?.also { uri ->
-                selectedMediaUri = uri
-                mediaType = contentResolver.getType(uri)?.let {
-                    when {
-                        it.startsWith("image/") -> "image"
-                        it.startsWith("video/") -> "video"
-                        else -> null
-                    }
-                }
-                if (mediaType == "image") {
-                    val imageView = findViewById<ImageView>(R.id.selectedImageView)
-                    imageView.visibility = View.VISIBLE
-                    findViewById<VideoView>(R.id.selectedVideoView).visibility = View.GONE
-                    imageView.setImageURI(selectedMediaUri) // Отображаем изображение.
-                } else if (mediaType == "video") {
-                    val videoView = findViewById<VideoView>(R.id.selectedVideoView)
-                    videoView.visibility = View.VISIBLE
-                    findViewById<ImageView>(R.id.selectedImageView).visibility = View.GONE
-                    // Устанавливаем URI видео и запускаем воспроизведение.
-                    videoView.setVideoURI(selectedMediaUri)
-                    videoView.start()
-                }
-            }
-        }
+        val animatorSet = AnimatorSet()
+        animatorSet.playTogether(scaleX, scaleY)
+        animatorSet.start()
     }
 }
