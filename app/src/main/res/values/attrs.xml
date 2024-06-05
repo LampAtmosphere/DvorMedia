@@ -4,4 +4,12 @@
     <attr name="drawer_back" format="reference|color"/>
     <attr name="nav_back" format="reference|color"/>
     <attr name="button_back" format="reference|color"/>
+    <attr name ="tg_logo" format="reference|color"/>
+    <attr name ="vk_logo" format="reference|color" />
+    <attr name ="iconProject" format="reference|color"/>
+    <attr name ="textCol" format="reference|color"/>
+    <attr name ="apply_icon" format="reference|color"/>
+    <attr name ="upload_icon" format="reference|color"/>
+    <attr name ="backgroundMain" format="reference|color"/>
+    <attr name="textdvor" format="reference|color"/>
 </resources>

@@ -6,59 +6,41 @@
     android:layout_height="match_parent"
     android:id="@+id/drawer_layout">
 
+    <!-- Основное содержимое экрана -->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="?attr/backgroundMain">
 
-        <!-- FrameLayout для main_content -->
+        <!-- Заголовок -->
+        <include
+            android:id="@+id/header_layout"
+            layout="@layout/header_layout" />
+
+        <!-- Основной контент -->
         <FrameLayout
             android:id="@+id/main_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/photo_2024_05_24_22_41_27" >
+            android:layout_below="@id/header_layout"
+            android:layout_marginTop="16dp"
+            android:padding="16dp"
+            android:clipToPadding="false">
 
-            <RelativeLayout
-                android:id="@+id/header_layout"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?attr/headerBackground"
-                android:padding="16dp">
-
-                <TextView
-                    android:id="@+id/header_title"
-                    android:layout_width="41dp"
-                    android:layout_height="wrap_content"
-                    android:text="≡"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20sp" />
-            </RelativeLayout>
+                android:scrollbars="vertical" />
         </FrameLayout>
 
-        <!-- Замена AppBarLayout и Toolbar на RelativeLayout с TextView -->
+        <include
+            android:id="@+id/footer_layout"
+            layout="@layout/footer_layout" />
 
-        <TextView
-            android:id="@+id/total_people_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="100dp"
-            android:layout_marginEnd="68dp"
-            android:text="Всего людей: 0"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/today_people_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/total_people_text"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="26dp"
-            android:layout_marginEnd="2dp"
-            android:text="Сколько сегодня пришло: 0"
-            android:textSize="18sp" />
     </RelativeLayout>
 
+    <!-- Навигационное меню -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"

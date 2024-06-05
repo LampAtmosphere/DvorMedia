@@ -38,6 +38,24 @@
     <color name="button_back_light">#8A46F139</color>
     <color name="button_back_dark">#956900A3</color>
 
+    <drawable name="background_MainL">@drawable/photo_2024_05_24_22_41_27</drawable>
+    <drawable name="background_MainD">@drawable/darkbwwb</drawable>
+
+    <drawable name="tg_logo_lightcolor">@drawable/tg_logo_light</drawable>
+    <drawable name="tg_logo_darkcolor">@drawable/tg_logo_dark</drawable>
+
+    <drawable name="vk_logo_lightcolor">@drawable/vk_logo_light</drawable>
+    <drawable name="vk_logo_darkcolor">@drawable/vk_logo_dark</drawable>
+
+    <drawable name="icon_project_light">@drawable/photo_2024_05_24_22_41_28</drawable>
+    <drawable name="icon_project_darkO">@drawable/icon_project_dark</drawable>
+
+    <drawable name="upload_lightA">@drawable/upload_light</drawable>
+    <drawable name="upload_dark_photo">@drawable/upload_photo</drawable>
+
+    <drawable name="apply_lightA">@drawable/apply_light</drawable>
+    <drawable name="apply_dark">@drawable/apply_save</drawable>
+
     <color name="dark_background">#121212</color>
     <color name="dark_surface">#1E1E1E</color>
     <color name="dark_primary">#500559</color>
@@ -51,5 +69,5 @@
     <color name="dark_transparent_orange">#A98E24AA</color>
     <color name="dark_transparent_red">#80D32F2F</color>
     <color name="dark_transparent_purple">#803700B3</color>
-
+    <color name="glow">#86FFFFFF</color>
 </resources>

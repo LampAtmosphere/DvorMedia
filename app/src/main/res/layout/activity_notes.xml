@@ -12,30 +12,29 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="681dp"
-            android:layout_marginTop="135dp"
-            android:scrollbars="vertical"/>  <!-- Скрыт по умолчанию -->
+            android:layout_height="729dp"
+            android:layout_marginTop="100dp"
+            android:scrollbars="vertical" />  <!-- Скрыт по умолчанию -->
 
         <EditText
             android:id="@+id/people_edit_text"
             android:layout_width="243dp"
             android:layout_height="50dp"
-            android:layout_marginLeft="80dp"
+            android:layout_marginLeft="30dp"
             android:layout_marginTop="28dp"
             android:background="@drawable/rounded_edit_text"
             android:hint="Кто сегодня пришёл:"
             android:inputType="text"
             android:padding="5dp"
-            android:visibility="gone" />/>
+            android:visibility="gone"/>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/save_button"
-            android:layout_width="243dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="80dp"
-            android:layout_marginLeft="80dp"
-            android:background="@drawable/rounded_button"
-            android:text="Сохранить"
-            android:visibility="gone" /> <!-- Скрыт по умолчанию -->
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="28dp"
+            android:layout_marginLeft="280dp"
+            android:background="?attr/apply_icon"
+            android:visibility="gone" />
     </FrameLayout>
 </RelativeLayout>

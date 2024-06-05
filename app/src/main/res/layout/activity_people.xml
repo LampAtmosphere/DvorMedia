@@ -12,8 +12,8 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="638dp"
-            android:layout_marginTop="135dp"
+            android:layout_height="722dp"
+            android:layout_marginTop="105dp"
             android:scrollbars="vertical" />
 
         <EditText
@@ -24,18 +24,16 @@
             android:background="@drawable/rounded_edit_text"
             android:inputType="text"
             android:padding="5dp"
-            android:layout_marginLeft="80dp"
+            android:layout_marginLeft="30dp"
             android:layout_marginTop="27dp"
-            android:visibility="gone" />
-
+            android:visibility="gone"/>
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/add_button"
-            android:layout_width="243dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rounded_button"
-            android:layout_marginTop="80dp"
-            android:layout_marginLeft="80dp"
-            android:text="Добавить"
-            android:visibility="gone" />
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="?attr/apply_icon"
+            android:layout_marginTop="27dp"
+            android:layout_marginLeft="280dp"
+            android:visibility="gone"/>
     </FrameLayout>
 </RelativeLayout>

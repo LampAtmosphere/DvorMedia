@@ -12,6 +12,14 @@
         <item name="drawer_back">@color/drawer_background_light</item>
         <item name="nav_back">@color/nav_back_light</item>
         <item name="button_back">@color/button_back_light</item>
+        <item name="tg_logo">@drawable/tg_logo_light</item>
+        <item name="vk_logo">@drawable/vk_logo_light</item>
+        <item name="textCol">#9E302E2E</item>
+        <item name="iconProject">@drawable/icon_project_light</item>
+        <item name="upload_icon">@drawable/upload_light</item>
+        <item name="apply_icon">@drawable/apply_light</item>
+        <item name="backgroundMain">@drawable/photo_2024_05_24_22_41_27</item>
+        <item name="textdvor">@drawable/text_dvorl</item>
     </style>
 
     <style name="Theme.DvorMedia" parent="Base.Theme.DvorMedia" />

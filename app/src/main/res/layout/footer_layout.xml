@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="6dp"
+    android:background="?attr/headerBackground">
+
+    <ImageButton
+        android:id="@+id/buttonOpenDrawer"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="0dp"
+        android:layout_marginStart="0dp"
+        android:background="@drawable/menu_icon"
+        android:contentDescription="@string/open_drawer" />
+
+    <ImageButton
+        android:id="@+id/buttonLinkTg"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="46dp"
+        android:background="?attr/tg_logo"
+        android:contentDescription="@string/link_tg" />
+
+    <ImageButton
+        android:id="@+id/buttonLinkVk"
+        android:layout_width="37dp"
+        android:layout_height="37dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="5dp"
+        android:background="?attr/vk_logo"
+        android:contentDescription="@string/link_vk" />
+</RelativeLayout>

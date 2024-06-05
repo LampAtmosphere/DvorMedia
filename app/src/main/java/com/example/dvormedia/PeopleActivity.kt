@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -26,6 +27,7 @@ class PeopleActivity : AppCompatActivity() {
     private val peopleList = mutableListOf<Person>()
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var mainContent: View
+    private var isAdmin: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +37,15 @@ class PeopleActivity : AppCompatActivity() {
         addButton = findViewById(R.id.add_button)
         recyclerView = findViewById(R.id.recyclerView)
         mainContent = findViewById(R.id.main_content) // Предполагается, что у вас есть View с id main_content
+
+        // Initialize SharedPreferences
+        sharedPreferences = getSharedPreferences("theme_prefs", MODE_PRIVATE)
+        val isNightMode = sharedPreferences.getBoolean("isNightMode", false)
+        if (isNightMode) {
+            mainContent.setBackgroundResource(R.drawable.darkbwwb)
+        } else {
+            mainContent.setBackgroundResource(R.drawable.photo_2024_05_24_22_41_27)
+        }
 
         setupRecyclerView()
         checkUserRole()
@@ -54,20 +65,11 @@ class PeopleActivity : AppCompatActivity() {
                 setDrawable(ContextCompat.getDrawable(this@PeopleActivity, R.drawable.divider)!!)
             }
         )
-
-        // Initialize SharedPreferences
-        sharedPreferences = getSharedPreferences("theme_prefs", MODE_PRIVATE)
-        val isNightMode = sharedPreferences.getBoolean("isNightMode", false)
-        if (isNightMode) {
-            mainContent.setBackgroundResource(R.drawable.darkbwwb)
-        } else {
-            mainContent.setBackgroundResource(R.drawable.photo_2024_05_24_22_41_27)
-        }
     }
 
     private fun setupRecyclerView() {
-        peopleAdapter = PeopleAdapter(peopleList) { person ->
-            // Действие при долгом нажатии на элемент
+        peopleAdapter = PeopleAdapter(peopleList, isAdmin) { person ->
+            showDeleteDialog(person)
         }
         recyclerView.adapter = peopleAdapter
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -82,6 +84,11 @@ class PeopleActivity : AppCompatActivity() {
                     if (role == "admin") {
                         personEditText.visibility = View.VISIBLE
                         addButton.visibility = View.VISIBLE
+                        isAdmin = true
+                        setupRecyclerView() // Пересоздать адаптер с правильным значением isAdmin
+                    } else {
+                        personEditText.visibility = View.GONE
+                        addButton.visibility = View.GONE
                     }
                 }
             }.addOnFailureListener {
@@ -95,7 +102,7 @@ class PeopleActivity : AppCompatActivity() {
             if (documents != null) {
                 peopleList.clear()
                 for (document in documents) {
-                    val person = document.toObject(Person::class.java)
+                    val person = document.toObject(Person::class.java).apply { id = document.id }
                     Log.d("PeopleActivity", "Loaded person: ${person.name}")
                     peopleList.add(person)
                 }
@@ -118,6 +125,30 @@ class PeopleActivity : AppCompatActivity() {
             Log.e("PeopleActivity", "Error adding person to Firestore", exception)
         }
     }
+
+    private fun showDeleteDialog(person: Person) {
+        AlertDialog.Builder(this)
+            .setTitle("Удалить человека")
+            .setMessage("Вы действительно хотите удалить ${person.name}?")
+            .setPositiveButton("Да") { _, _ ->
+                deletePerson(person)
+            }
+            .setNegativeButton("Нет", null)
+            .show()
+    }
+
+    private fun deletePerson(person: Person) {
+        FirebaseFirestore.getInstance().collection("people").document(person.id).delete()
+            .addOnSuccessListener {
+                peopleList.remove(person)
+                peopleAdapter.notifyDataSetChanged()
+                Toast.makeText(this, "${person.name} удален", Toast.LENGTH_SHORT).show()
+            }.addOnFailureListener { exception ->
+                Toast.makeText(this, "Ошибка при удалении ${person.name}", Toast.LENGTH_SHORT).show()
+                Log.e("PeopleActivity", "Error deleting person from Firestore", exception)
+            }
+    }
+
     private fun animateButtonClick(view: View) {
         val scaleX = ObjectAnimator.ofFloat(view, "scaleX", 1f, 0.95f, 1f)
         val scaleY = ObjectAnimator.ofFloat(view, "scaleY", 1f, 0.95f, 1f)

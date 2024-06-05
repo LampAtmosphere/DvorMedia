@@ -38,6 +38,7 @@ class NotesActivity : AppCompatActivity() {
     private lateinit var notesListener: ListenerRegistration
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var mainContent: View
+    private var isAdmin: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,33 +49,14 @@ class NotesActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerView)
         mainContent = findViewById(R.id.main_content) // Предполагается, что у вас есть View с id main_content
 
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        notesAdapter = NotesAdapter(notesList) { note ->
-            showDeleteDialog(note)
-            recyclerView.addItemDecoration(
-                DividerItemDecoration(this, DividerItemDecoration.VERTICAL).apply {
-                    setDrawable(ContextCompat.getDrawable(this@NotesActivity, R.drawable.divider)!!)
-                }
-            )
-        }
-        recyclerView.adapter = notesAdapter
+        setupRecyclerView()
+        checkUserRole()
+        loadNotesData() // Загрузка данных из Firestore
 
-        // Проверка роли пользователя
-        checkUserRole { isAdmin ->
-            if (isAdmin) {
-                saveButton.setOnClickListener {
-                    animateButtonClick(it)
-                    saveNote()
-                }
-                peopleEditText.visibility = View.VISIBLE
-                saveButton.visibility = View.VISIBLE
-            } else {
-                peopleEditText.visibility = View.GONE
-                saveButton.visibility = View.GONE
-            }
+        saveButton.setOnClickListener {
+            animateButtonClick(it)
+            saveNote()
         }
-
-        loadNotesData()
 
         // Initialize SharedPreferences
         sharedPreferences = getSharedPreferences("theme_prefs", MODE_PRIVATE)
@@ -86,31 +68,38 @@ class NotesActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveNote() {
-        val people = peopleEditText.text.toString().split(",").map { it.trim() }.filter { it.isNotEmpty() }
-        if (people.isEmpty()) {
-            Toast.makeText(this, "Пожалуйста, введите хотя бы одно имя", Toast.LENGTH_SHORT).show()
-            return
+    private fun setupRecyclerView() {
+        notesAdapter = NotesAdapter(notesList, isAdmin) { note ->
+            showDeleteDialog(note)
         }
-
-        val currentDate = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(Date())
-
-        val noteRef = FirebaseFirestore.getInstance().collection("notes").document(currentDate)
-        noteRef.get().addOnSuccessListener { document ->
-            if (document.exists()) {
-                noteRef.update("people", FieldValue.arrayUnion(*people.toTypedArray()))
-            } else {
-                val note = hashMapOf(
-                    "date" to currentDate,
-                    "people" to people
-                )
-                noteRef.set(note)
+        recyclerView.adapter = notesAdapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.addItemDecoration(
+            DividerItemDecoration(this, DividerItemDecoration.VERTICAL).apply {
+                setDrawable(ContextCompat.getDrawable(this@NotesActivity, R.drawable.divider)!!)
             }
-        }.addOnCompleteListener {
-            // Показать сообщение о сохранении
-            Toast.makeText(this, "Данные сохранены", Toast.LENGTH_SHORT).show()
-            // Очистить поле ввода
-            peopleEditText.text.clear()
+        )
+    }
+
+    private fun checkUserRole() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId != null) {
+            FirebaseFirestore.getInstance().collection("users").document(userId).get().addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val role = document.getString("role")
+                    if (role == "admin") {
+                        peopleEditText.visibility = View.VISIBLE
+                        saveButton.visibility = View.VISIBLE
+                        isAdmin = true
+                        setupRecyclerView() // Пересоздать адаптер с правильным значением isAdmin
+                    } else {
+                        peopleEditText.visibility = View.GONE
+                        saveButton.visibility = View.GONE
+                    }
+                }
+            }.addOnFailureListener {
+                // Обработка ошибки
+            }
         }
     }
 
@@ -150,6 +139,34 @@ class NotesActivity : AppCompatActivity() {
             }
     }
 
+    private fun saveNote() {
+        val people = peopleEditText.text.toString().split(",").map { it.trim() }.filter { it.isNotEmpty() }
+        if (people.isEmpty()) {
+            Toast.makeText(this, "Пожалуйста, введите хотя бы одно имя", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val currentDate = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(Date())
+
+        val noteRef = FirebaseFirestore.getInstance().collection("notes").document(currentDate)
+        noteRef.get().addOnSuccessListener { document ->
+            if (document.exists()) {
+                noteRef.update("people", FieldValue.arrayUnion(*people.toTypedArray()))
+            } else {
+                val note = hashMapOf(
+                    "date" to currentDate,
+                    "people" to people
+                )
+                noteRef.set(note)
+            }
+        }.addOnCompleteListener {
+            // Показать сообщение о сохранении
+            Toast.makeText(this, "Данные сохранены", Toast.LENGTH_SHORT).show()
+            // Очистить поле ввода
+            peopleEditText.text.clear()
+        }
+    }
+
     private fun showDeleteDialog(note: Note) {
         AlertDialog.Builder(this)
             .setTitle("Удалить запись")
@@ -164,28 +181,12 @@ class NotesActivity : AppCompatActivity() {
     private fun deleteNote(note: Note) {
         FirebaseFirestore.getInstance().collection("notes").document(note.id).delete()
             .addOnSuccessListener {
-                // Успешно удалено
+                notesList.remove(note)
+                notesAdapter.notifyDataSetChanged()
+                Toast.makeText(this, "Запись удалена", Toast.LENGTH_SHORT).show()
             }.addOnFailureListener {
-                // Обработка ошибки
+                Toast.makeText(this, "Ошибка при удалении записи", Toast.LENGTH_SHORT).show()
             }
-    }
-
-    private fun checkUserRole(callback: (Boolean) -> Unit) {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        if (userId != null) {
-            FirebaseFirestore.getInstance().collection("users").document(userId).get().addOnSuccessListener { document ->
-                if (document.exists()) {
-                    val role = document.getString("role")
-                    callback(role == "admin")
-                } else {
-                    callback(false)
-                }
-            }.addOnFailureListener {
-                callback(false)
-            }
-        } else {
-            callback(false)
-        }
     }
 
     private fun animateButtonClick(view: View) {

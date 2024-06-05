@@ -20,6 +20,14 @@
         <item name="drawer_back">@color/drawer_background_dark</item>
         <item name="nav_back">@color/nav_back_dark</item>
         <item name="button_back">@color/button_back_dark</item>
+        <item name="tg_logo">@drawable/tg_logo_dark</item>
+        <item name="vk_logo">@drawable/vk_logo_dark</item>
+        <item name="textCol">#A3FFFFFF</item>
+        <item name="iconProject">@drawable/icon_project_darkO</item>
+        <item name="upload_icon">@drawable/upload_photo</item>
+        <item name="apply_icon">@drawable/apply_save</item>
+        <item name="backgroundMain">@drawable/darkbwwb</item>
+        <item name="textdvor">@drawable/text_dvord_png</item>
     </style>
 
     <style name="Theme.DvorMedia" parent="Base.Theme.DvorMedia">

@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
@@ -24,13 +23,12 @@ class ExampleActivity : AppCompatActivity() {
         setContentView(R.layout.activity_example)
 
         recyclerView = findViewById(R.id.recyclerView)
-        mainContent = findViewById(R.id.main_content) // Предполагается, что у вас есть View с id main_content
+        mainContent = findViewById(R.id.main_content)
 
         adapter = EventsAdapter(events)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@ExampleActivity)
             adapter = this@ExampleActivity.adapter
-            addItemDecoration(DividerItemDecoration(this@ExampleActivity, DividerItemDecoration.VERTICAL))
         }
 
         fetchEvents()

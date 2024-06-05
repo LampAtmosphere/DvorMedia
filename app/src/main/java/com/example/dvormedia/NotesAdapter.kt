@@ -6,7 +6,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class NotesAdapter(private val notesList: List<Note>, private val onNoteLongClick: (Note) -> Unit) : RecyclerView.Adapter<NotesAdapter.NoteViewHolder>() {
+class NotesAdapter(
+    private val notesList: List<Note>,
+    private val isAdmin: Boolean,
+    private val onNoteLongClick: (Note) -> Unit
+) : RecyclerView.Adapter<NotesAdapter.NoteViewHolder>() {
 
     class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val dateTextView: TextView = itemView.findViewById(R.id.date_text_view)
@@ -23,9 +27,11 @@ class NotesAdapter(private val notesList: List<Note>, private val onNoteLongClic
         holder.dateTextView.text = note.date
         holder.peopleTextView.text = note.people.joinToString("\n")
 
-        holder.itemView.setOnLongClickListener {
-            onNoteLongClick(note)
-            true
+        if (isAdmin) {
+            holder.itemView.setOnLongClickListener {
+                onNoteLongClick(note)
+                true
+            }
         }
     }
 
