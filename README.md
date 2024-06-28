@@ -21,7 +21,7 @@
 ## Установка
 
 1. **Клонирование репозитория**
-    git clone https://github.com/ваш-логин/двор-медиа.git
+    [git clone https://github.com/ваш-логин/двор-медиа.git](https://github.com/LampAtmosphere/DvorMedia)
 
 ## Использование
 
